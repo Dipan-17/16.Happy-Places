@@ -1,11 +1,13 @@
 package com.example.happyplaces
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
@@ -16,6 +18,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import java.io.IOException
 import java.util.Calendar
 import java.util.Locale
 
@@ -28,6 +31,11 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
 
     private var cal=Calendar.getInstance()
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
+
+    //companion object used to create static variables and constant
+    companion object{
+        private const val GALLERY=1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +76,9 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
             binding?.tvAddImage?.id -> {
                 val pictureDialog= AlertDialog.Builder(this)
                 pictureDialog.setTitle("Select Action")
+
                 val pictureDialogItems= arrayOf("Select photo from gallery","Capture photo from camera")
+
                 pictureDialog.setItems(pictureDialogItems){
                     _, which ->
                     when(which){
@@ -89,6 +99,7 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
         TODO("Not yet implemented")
     }
 
+    //this method uses dexter to handle permissions
     private fun callChoosePhotoFromGallery() {
         Dexter.withActivity(this)
             .withPermissions(
@@ -96,7 +107,13 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                     if(report!!.areAllPermissionsGranted()){
-                        Toast.makeText(this@AddHappyActivity,"Read permission granted",Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@AddHappyActivity,"Read permission granted",Toast.LENGTH_SHORT).show()
+                        //pick image from gallery
+                        val galleryIntent=Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                            )
+                        startActivityForResult(galleryIntent, GALLERY)
                     }
                 }
 
@@ -107,6 +124,37 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                     showRationalDialogForPermissions()
                 }
             }).onSameThread().check()
+    }
+
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //if the result is ok
+        if (resultCode == Activity.RESULT_OK) {
+
+            //activity result is of gallery
+            if (requestCode == GALLERY) {
+                if (data != null) {
+                    val contentURI = data.data
+                    try {
+                        val selectedImageBitmap =
+                            MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+                        binding?.ivPlaceImage?.setImageBitmap(selectedImageBitmap)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        Toast.makeText(
+                            this@AddHappyActivity,
+                            "Failed to load image from gallery",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }else{
+                    Toast.makeText(this@AddHappyActivity,"Invalid URI",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
     }
 
     private fun showRationalDialogForPermissions(){
