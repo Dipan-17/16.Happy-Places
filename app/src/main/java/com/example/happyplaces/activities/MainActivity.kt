@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         const val ADD_PLACE_ACTIVITY_REQUEST_CODE=1
+        var EXTRA_PLACE_DETAILS="extra_place_details"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         adapter.setOnClickListener(object: HappyPlacesAdapter.onClickInterface{
             override fun onClick(position: Int, model: HappyPlaceModel) {
                 val intent=Intent(this@MainActivity, HappyPlaceDetailActivity::class.java)
+                intent.putExtra(EXTRA_PLACE_DETAILS,model)
                 startActivity(intent)
             }
         })
