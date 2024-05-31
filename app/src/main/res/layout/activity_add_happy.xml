@@ -89,7 +89,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_description">
-
+<!-- Focusable false prevents us from typing in the date: We want to select from calendar -->
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_date"
                     android:layout_width="match_parent"
@@ -98,7 +98,12 @@
                     android:inputType="text"
                     android:textColor="@color/primary_text_color"
                     android:textColorHint="@color/secondary_text_color"
-                    android:textSize="@dimen/edit_text_text_size" />
+                    android:textSize="@dimen/edit_text_text_size"
+
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
