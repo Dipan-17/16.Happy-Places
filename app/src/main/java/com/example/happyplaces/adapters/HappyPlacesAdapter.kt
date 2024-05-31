@@ -10,6 +10,7 @@ import com.example.happyplaces.models.HappyPlaceModel
 
 open class HappyPlacesAdapter(private var list: ArrayList<HappyPlaceModel>) : RecyclerView.Adapter<HappyPlacesAdapter.MyViewHolder>() {
 
+    private var onClickListener: onClickInterface?=null
     inner class MyViewHolder(private val binding: ItemHappyPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(model: HappyPlaceModel) {
             binding.ivPlaceImage.setImageURI(Uri.parse(model.image))
@@ -26,11 +27,27 @@ open class HappyPlacesAdapter(private var list: ArrayList<HappyPlaceModel>) : Re
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val model = list[position]
         holder.bind(model)
+
+        holder.itemView.setOnClickListener{
+            //whatever you want to do when clicked
+            if(onClickListener!=null){
+                onClickListener!!.onClick(position,model)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
+    fun setOnClickListener(onClickListener: onClickInterface){
+        this.onClickListener=onClickListener
+    }
+    //for clicking recycler view items
+    interface onClickInterface{
+        //we need position to identify
+        //model to populate the detail activity
+        fun onClick(position: Int, model: HappyPlaceModel)
+    }
 
 }

@@ -54,6 +54,14 @@ class MainActivity : AppCompatActivity() {
         binding?.rvHappyPlaces?.setHasFixedSize(true)
         binding?.rvHappyPlaces?.layoutManager= LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
         binding?.rvHappyPlaces?.adapter=adapter
+
+
+        adapter.setOnClickListener(object: HappyPlacesAdapter.onClickInterface{
+            override fun onClick(position: Int, model: HappyPlaceModel) {
+                val intent=Intent(this@MainActivity, HappyPlaceDetailActivity::class.java)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
