@@ -3,15 +3,21 @@ package com.example.happyplaces
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.Context.*
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.happyplaces.databinding.ActivityAddHappyBinding
 import com.karumi.dexter.Dexter
@@ -19,9 +25,13 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.OutputStream
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
 
 //here we are passing the View.OnClickListener and implementing the onClick method
@@ -30,13 +40,18 @@ import java.util.Locale
 class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
     private var binding: ActivityAddHappyBinding?= null
 
+    //to get the date from calendar and write in edit text
     private var cal=Calendar.getInstance()
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
 
     //companion object used to create static variables and constant
     companion object{
+        //to open gallery and camera
         private const val GALLERY=1
         private const val CAMERA=2
+
+        //to store image in local
+        private const val IMAGE_DIRECTORY="HappyPlacesImages"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,10 +81,12 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
     override fun onClick(v: View?) {
         when(v!!.id){
             binding?.etDate?.id -> {
-                DatePickerDialog(this@AddHappyActivity,
-                    dateSetListener,cal.get(Calendar.YEAR)
-                    ,cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show()
+                DatePickerDialog(
+                    this@AddHappyActivity,
+                    dateSetListener,cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+                ).show()
 
                     //we have declared the calendar as global variable so that we can access it in the dateSetListener
                     updateDateInView()
@@ -97,9 +114,11 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
         }
     }
 
+
     private fun callChoosePhotoFromCamera() {
         Dexter.withActivity(this)
             .withPermissions(
+                android.Manifest.permission.READ_MEDIA_IMAGES,
                 android.Manifest.permission.CAMERA
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
@@ -125,7 +144,7 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
     private fun callChoosePhotoFromGallery() {
         Dexter.withActivity(this)
             .withPermissions(
-                android.Manifest.permission.READ_MEDIA_IMAGES
+                android.Manifest.permission.READ_MEDIA_IMAGES,
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                     if(report!!.areAllPermissionsGranted()){
@@ -160,9 +179,13 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                 if (data != null) {
                     val contentURI = data.data
                     try {
-                        val selectedImageBitmap =
-                            MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+                        val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
                         binding?.ivPlaceImage?.setImageBitmap(selectedImageBitmap)
+
+                        //store in internal
+                        val path=saveImageToInternalStorage(selectedImageBitmap)
+                        Log.e("Saved Image Path", "Path :: $path")
+
                     } catch (e: IOException) {
                         e.printStackTrace()
                         Toast.makeText(
@@ -180,6 +203,11 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
             else if (requestCode == CAMERA) {
                 val thumbnail:Bitmap = data?.extras?.get("data") as Bitmap
                 binding?.ivPlaceImage?.setImageBitmap(thumbnail)
+
+                //store in internal
+                val path=saveImageToInternalStorage(thumbnail)
+                Log.e("Saved Image Path", "Path :: $path")
+
             }
         }
     }
@@ -203,6 +231,7 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                 dialog.dismiss()
             }.show()
     }
+
     private fun updateDateInView(){
         val format="dd.MM.yyyy"
         val sdf=SimpleDateFormat(format, Locale.getDefault())
@@ -210,6 +239,25 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
     }
 
 
+    private fun saveImageToInternalStorage(bitmap: Bitmap):Uri{
+        val wrapper= ContextWrapper(applicationContext)
 
+        //creating a file
+        var file=wrapper.getDir(IMAGE_DIRECTORY, MODE_PRIVATE) //mode private only makes it accessible from the calling application
+        file= File(file,"${UUID.randomUUID()}.jpg")
+
+        try{
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+            stream.flush()
+            stream.close()
+            Toast.makeText(this@AddHappyActivity,"Image saved successfully",Toast.LENGTH_SHORT).show()
+        }catch (e:IOException){
+            e.printStackTrace()
+            Toast.makeText(this@AddHappyActivity,"Failed to save image",Toast.LENGTH_SHORT).show()
+        }
+
+        return Uri.parse(file.absolutePath)
+    }
 
 }
