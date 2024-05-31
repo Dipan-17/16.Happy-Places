@@ -52,7 +52,8 @@ dependencies {
 
     //circle image view
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
     //dexter
     implementation("com.karumi:dexter:6.0.1")
+    //debuging
+    debugImplementation("im.dino:dbinspector:3.4.1@aar")
 }
