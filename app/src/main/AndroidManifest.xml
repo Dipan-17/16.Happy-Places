@@ -41,10 +41,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="im.dino.dbinspector.activities.DbInspectorActivity"
-            android:exported="true"> <!-- or false, depending on your needs -->
-            <!-- your intent filters here -->
+        <!--
+
+       <activity android:name="im.dino.dbinspector.activities.DbInspectorActivity"
+           android:exported="true">
+
         </activity>
+
+        -->
     </application>
 
 </manifest>
