@@ -1,7 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.HappyPlaces" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.HappyPlaces" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <!-- Main application theme -->
+    <style name="AppTheme" parent="Base.Theme.HappyPlaces">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.HappyPlaces" parent="AppTheme" />
 </resources>

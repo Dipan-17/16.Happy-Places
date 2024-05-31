@@ -14,9 +14,9 @@ class AddHappyActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         //display back button on toolbar
-        setSupportActionBar(binding?.toolBarAddPlace)
+        setSupportActionBar(binding?.toolbarAddPlace)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding?.toolBarAddPlace?.setNavigationOnClickListener {
+        binding?.toolbarAddPlace?.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
     }

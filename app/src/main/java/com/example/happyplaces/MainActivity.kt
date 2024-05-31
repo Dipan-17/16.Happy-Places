@@ -3,6 +3,7 @@ package com.example.happyplaces
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.example.happyplaces.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -15,8 +16,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         binding?.fabAddHappyPlace?.setOnClickListener {
-            val intent:Intent= Intent(this, AddHappyActivity::class.java)
-            startActivity(intent)
+             val intent=Intent(this@MainActivity,AddHappyActivity::class.java)
+             startActivity(intent)
+            Toast.makeText(this, "Button Clicked", Toast.LENGTH_SHORT).show()
         }
     }
 

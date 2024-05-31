@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
     <!--(Step 4: Here we are adding the DIMEN values as a constants which are required to design the Add Happy Places Screen. And which is also a standard way to develop a application in android.)-->
     <!--START-->
     <dimen name="main_content_padding">16dp</dimen>
@@ -19,4 +20,5 @@
     <dimen name="add_place_image_shape_radius">3dp</dimen>
     <dimen name="button_radius">10dp</dimen>
     <!--END-->
+
 </resources>
