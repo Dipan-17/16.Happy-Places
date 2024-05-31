@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding?.fabAddHappyPlace?.setOnClickListener {
              val intent=Intent(this@MainActivity,AddHappyActivity::class.java)
              startActivity(intent)
-            Toast.makeText(this, "Button Clicked", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Button Clicked", Toast.LENGTH_SHORT).show()
         }
     }
 
