@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
@@ -35,6 +36,7 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
     //companion object used to create static variables and constant
     companion object{
         private const val GALLERY=1
+        private const val CAMERA=2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +98,27 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     private fun callChoosePhotoFromCamera() {
-        TODO("Not yet implemented")
+        Dexter.withActivity(this)
+            .withPermissions(
+                android.Manifest.permission.CAMERA
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    if(report!!.areAllPermissionsGranted()){
+                        //pick image from camera
+                        val cameraIntent=Intent(
+                            MediaStore.ACTION_IMAGE_CAPTURE
+                        )
+                        startActivityForResult(cameraIntent, CAMERA)
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    showRationalDialogForPermissions()
+                }
+            }).onSameThread().check()
     }
 
     //this method uses dexter to handle permissions
@@ -154,6 +176,11 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                 }
             }
 
+            //activity result from camera
+            else if (requestCode == CAMERA) {
+                val thumbnail:Bitmap = data?.extras?.get("data") as Bitmap
+                binding?.ivPlaceImage?.setImageBitmap(thumbnail)
+            }
         }
     }
 
