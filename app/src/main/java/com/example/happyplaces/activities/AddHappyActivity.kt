@@ -168,6 +168,10 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                         val addHappyPlaceResult=dbHandler.addHappyPlace(happyPlaceModel)
                         if(addHappyPlaceResult>0){
                             Toast.makeText(this,"The happy place details are added successfully",Toast.LENGTH_SHORT).show()
+
+                            //cause main activity called with result
+                            setResult(Activity.RESULT_OK)
+
                             finish() //close the add activity
                         }else{
                             Toast.makeText(this,"Error while adding the happy place details",Toast.LENGTH_SHORT).show()

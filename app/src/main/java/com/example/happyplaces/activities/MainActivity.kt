@@ -13,6 +13,10 @@ import com.happyplaces.adapters.HappyPlacesAdapter
 class MainActivity : AppCompatActivity() {
 
     private var binding:ActivityMainBinding?= null
+
+    companion object{
+        const val ADD_PLACE_ACTIVITY_REQUEST_CODE=1
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -21,8 +25,10 @@ class MainActivity : AppCompatActivity() {
 
         binding?.fabAddHappyPlace?.setOnClickListener {
              val intent=Intent(this@MainActivity, AddHappyActivity::class.java)
-             startActivity(intent)
-                //Toast.makeText(this, "Button Clicked", Toast.LENGTH_SHORT).show()
+             //startActivity(intent)
+             //the database is only refreshed on create so we need to refresh it
+            //so we will start the add activity for result
+            startActivityForResult(intent,ADD_PLACE_ACTIVITY_REQUEST_CODE)
         }
         getHappyPlacesListFromLocalDB()
     }
@@ -46,6 +52,19 @@ class MainActivity : AppCompatActivity() {
         binding?.rvHappyPlaces?.setHasFixedSize(true)
         binding?.rvHappyPlaces?.layoutManager= LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
         binding?.rvHappyPlaces?.adapter=adapter
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode== ADD_PLACE_ACTIVITY_REQUEST_CODE){
+            if(resultCode== RESULT_OK){
+                //call this function to refresh the list
+                getHappyPlacesListFromLocalDB()
+            }else{
+                Log.e("Activity","Cancelled or Back pressed")
+            }
+        }
     }
 
 }
