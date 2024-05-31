@@ -2,9 +2,13 @@ package com.example.happyplaces.databases
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.example.happyplaces.models.HappyPlaceModel
+
 
 class DatabaseHandler(context:Context):
     SQLiteOpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION) {
@@ -63,4 +67,47 @@ class DatabaseHandler(context:Context):
         db.close() // Closing database connection
         return result
     }
-}
+
+    fun getHappyPlacesList():ArrayList<HappyPlaceModel>{
+        val happyPlaceList = ArrayList<HappyPlaceModel>()
+        //run the query
+        val selectQuery= "SELECT * FROM $TABLE_HAPPY_PLACE"
+        val db=this.readableDatabase
+
+        try{
+            //we need cursor to select through all entries
+            val cursor:Cursor=db.rawQuery(selectQuery,null)
+            if(cursor.moveToFirst()){
+                do{
+                    try {//so that no illegal column is selected
+                        val place = HappyPlaceModel(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_TITLE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_IMAGE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_DESCRIPTION)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_DATE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)),
+                            cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LATITUDE)),
+                            cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LONGITUDE))
+                        )
+                        happyPlaceList.add(place)
+                    } catch (e: IllegalArgumentException) {
+                        Log.e("DatabaseHandler", "Error getting data from database", e)
+
+                    }
+
+
+
+                }while (cursor.moveToNext())
+            }
+            cursor.close()
+
+        }catch (e:SQLiteException){
+            db.execSQL(selectQuery)
+            return ArrayList()
+        }
+        return happyPlaceList
+    }
+
+
+    }
