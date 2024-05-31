@@ -6,12 +6,8 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-
-
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -25,11 +21,20 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".activities.AddHappyActivity"
+            android:name=".activities.HappyPlaceDetailActivity"
+            android:exported="false"
+            android:label="HAPPY PLACE DETAILS"
             android:screenOrientation="portrait"
+            android:theme="@style/customNoActionBarTheme" />
+
+
+        <activity
+            android:name=".activities.AddHappyActivity"
+            android:exported="false"
             android:label="ADD HAPPY PLACE"
-            android:theme="@style/customNoActionBarTheme"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:theme="@style/customNoActionBarTheme" />
+
 
         <activity
             android:name=".activities.MainActivity"
@@ -41,14 +46,7 @@
             </intent-filter>
         </activity>
 
-        <!--
 
-       <activity android:name="im.dino.dbinspector.activities.DbInspectorActivity"
-           android:exported="true">
-
-        </activity>
-
-        -->
     </application>
 
 </manifest>

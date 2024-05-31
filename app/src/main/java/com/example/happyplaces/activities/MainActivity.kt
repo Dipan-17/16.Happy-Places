@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        setSupportActionBar(binding?.toolbarMain)
+
         binding?.fabAddHappyPlace?.setOnClickListener {
              val intent=Intent(this@MainActivity, AddHappyActivity::class.java)
              //startActivity(intent)
