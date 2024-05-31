@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         setSupportActionBar(binding?.toolbarMain)
+        supportActionBar?.title="Your Places"
 
         binding?.fabAddHappyPlace?.setOnClickListener {
              val intent=Intent(this@MainActivity, AddHappyActivity::class.java)
