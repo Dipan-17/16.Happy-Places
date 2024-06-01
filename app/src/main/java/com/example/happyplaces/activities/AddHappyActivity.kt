@@ -182,7 +182,8 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                     }
                     else -> {
                         val happyPlaceModel= HappyPlaceModel(
-                            0,//auto incremented
+                            //auto incremented if null -> add, else for update the previous id
+                            if(mHappyPlaceDetails==null)0 else mHappyPlaceDetails!!.id,
                             binding?.etTitle?.text.toString(),
                             saveImageToInternalStorage.toString(),
                             binding?.etDescription?.text.toString(),
@@ -193,18 +194,37 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
                         )
 
                         val dbHandler= DatabaseHandler(this)
-                        val addHappyPlaceResult=dbHandler.addHappyPlace(happyPlaceModel)
-                        if(addHappyPlaceResult>0){
-                            Toast.makeText(this,"The happy place details are added successfully",Toast.LENGTH_SHORT).show()
 
-                            //cause main activity called with result
-                            setResult(Activity.RESULT_OK)
+                        if(mHappyPlaceDetails==null){
+                            //this was only for adding
+                            val addHappyPlaceResult=dbHandler.addHappyPlace(happyPlaceModel)
+                            if(addHappyPlaceResult>0){
+                                Toast.makeText(this,"The happy place details are added successfully",Toast.LENGTH_SHORT).show()
 
-                            finish() //close the add activity
+                                //cause main activity called with result
+                                setResult(Activity.RESULT_OK)
+
+                                finish() //close the add activity
+                            }else{
+                                Toast.makeText(this,"Error while adding the happy place details",Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
                         }else{
-                            Toast.makeText(this,"Error while adding the happy place details",Toast.LENGTH_SHORT).show()
-                            finish()
+                            //this is for updating
+                            val updateHappyPlaceResult=dbHandler.updateHappyPlace(happyPlaceModel)
+                            if(updateHappyPlaceResult>0){
+                                Toast.makeText(this,"The happy place details are updated successfully",Toast.LENGTH_SHORT).show()
+                                //cause main activity called with result
+                                setResult(Activity.RESULT_OK)
+
+                                finish() //close the add activity
+                            }else{
+                                Toast.makeText(this,"Error while updating the happy place details",Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
                         }
+
+
 
                     }
                 }

@@ -68,6 +68,27 @@ class DatabaseHandler(context:Context):
         return result
     }
 
+
+    fun updateHappyPlace(happyPlace: HappyPlaceModel): Int {
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(KEY_TITLE, happyPlace.title) // HappyPlaceModelClass TITLE
+        contentValues.put(KEY_IMAGE, happyPlace.image) // HappyPlaceModelClass IMAGE
+        contentValues.put(KEY_DESCRIPTION, happyPlace.description) // HappyPlaceModelClass DESCRIPTION
+        contentValues.put(KEY_DATE, happyPlace.date) // HappyPlaceModelClass DATE
+        contentValues.put(KEY_LOCATION, happyPlace.location) // HappyPlaceModelClass LOCATION
+        contentValues.put(KEY_LATITUDE, happyPlace.latitude) // HappyPlaceModelClass LATITUDE
+        contentValues.put(KEY_LONGITUDE, happyPlace.longitude) // HappyPlaceModelClass LONGITUDE
+
+        // Editing row
+        val success=db.update(TABLE_HAPPY_PLACE,contentValues, KEY_ID + "=" + happyPlace.id,null)
+
+        db.close() // Closing database connection
+        return success
+    }
+
+
     fun getHappyPlacesList():ArrayList<HappyPlaceModel>{
         val happyPlaceList = ArrayList<HappyPlaceModel>()
         //run the query
