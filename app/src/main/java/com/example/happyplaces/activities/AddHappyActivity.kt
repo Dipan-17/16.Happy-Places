@@ -58,6 +58,9 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
         private const val IMAGE_DIRECTORY="HappyPlacesImages"
     }
 
+    //to know whether to edit or add
+    private var mHappyPlaceDetails:HappyPlaceModel?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,6 +87,31 @@ class AddHappyActivity : AppCompatActivity(),View.OnClickListener {
         binding?.etDate?.setOnClickListener(this@AddHappyActivity)
         binding?.tvAddImage?.setOnClickListener(this@AddHappyActivity)
         binding?.btnSave?.setOnClickListener ( this@AddHappyActivity )
+
+
+
+        //if we are editing the happy place
+        if(intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)){
+            mHappyPlaceDetails=intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS) as HappyPlaceModel
+        }
+
+        //we are not adding, but editing
+        if(mHappyPlaceDetails!=null){
+            supportActionBar?.title="Edit Happy Place"
+            binding?.btnSave?.text="UPDATE"
+
+            //populate the UI with the details
+            binding?.etTitle?.setText(mHappyPlaceDetails!!.title)
+            binding?.etDescription?.setText(mHappyPlaceDetails!!.description)
+            binding?.etDate?.setText(mHappyPlaceDetails!!.date)
+            binding?.etLocation?.setText(mHappyPlaceDetails!!.location)
+            mLatitute=mHappyPlaceDetails!!.latitude
+            mLongitude=mHappyPlaceDetails!!.longitude
+
+            saveImageToInternalStorage=Uri.parse(mHappyPlaceDetails!!.image)
+            binding?.ivPlaceImage?.setImageURI(saveImageToInternalStorage)
+
+        }
     }
 
     override fun onClick(v: View?) {

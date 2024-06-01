@@ -1,14 +1,20 @@
 package com.happyplaces.adapters
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.happyplaces.activities.AddHappyActivity
+import com.example.happyplaces.activities.MainActivity
 import com.example.happyplaces.databinding.ItemHappyPlaceBinding
 import com.example.happyplaces.models.HappyPlaceModel
+import kotlinx.coroutines.NonDisposableHandle.parent
 
-open class HappyPlacesAdapter(private var list: ArrayList<HappyPlaceModel>) : RecyclerView.Adapter<HappyPlacesAdapter.MyViewHolder>() {
+//Context is necessary to pass intents Line 60
+open class HappyPlacesAdapter(private val context: Context,private var list: ArrayList<HappyPlaceModel>) : RecyclerView.Adapter<HappyPlacesAdapter.MyViewHolder>() {
 
     private var onClickListener: onClickInterface?=null
     inner class MyViewHolder(private val binding: ItemHappyPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -48,6 +54,17 @@ open class HappyPlacesAdapter(private var list: ArrayList<HappyPlaceModel>) : Re
         //we need position to identify
         //model to populate the detail activity
         fun onClick(position: Int, model: HappyPlaceModel)
+    }
+
+    //swipe to edit
+    fun notifyEditItem(activity:Activity,position: Int,requestCode:Int){
+        val intent= Intent(context, AddHappyActivity::class.java)
+        intent.putExtra(MainActivity.EXTRA_PLACE_DETAILS,list[position])
+        //we require the activity to call startActivity, because adapter can't do it on own
+        activity.startActivityForResult(intent,requestCode)
+
+        //notify the adapter that the item has been edited
+        notifyItemChanged(position)
     }
 
 }
