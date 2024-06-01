@@ -6,9 +6,11 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.happyplaces.activities.AddHappyActivity
 import com.example.happyplaces.activities.MainActivity
+import com.example.happyplaces.databases.DatabaseHandler
 import com.example.happyplaces.databinding.ItemHappyPlaceBinding
 import com.example.happyplaces.models.HappyPlaceModel
 import kotlinx.coroutines.NonDisposableHandle.parent
@@ -65,6 +67,18 @@ open class HappyPlacesAdapter(private val context: Context,private var list: Arr
 
         //notify the adapter that the item has been edited
         notifyItemChanged(position)
+    }
+
+    //swipe to delete
+    fun removeAt(position: Int){
+        val dbHandler= DatabaseHandler(context)
+        val isDeleted=dbHandler.deleteHappyPlace(list[position])
+        if(isDeleted>0){
+            list.removeAt(position)
+            notifyItemRemoved(position)
+        }else{
+            Toast.makeText(context,"Error deleting",Toast.LENGTH_SHORT).show()
+        }
     }
 
 }
