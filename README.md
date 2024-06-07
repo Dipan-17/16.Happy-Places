@@ -43,25 +43,25 @@ Focusable false prevents us from typing in the date: We want to select from cale
 
 16. Checking ResultCode and requestCode
 
-17. How to make recycler view items clickable
-	I. Create an interface inside adapter
-		interface onClickInterface{
-			//we need position to identify
-       			 //model to populate the detail activity
-        		fun onClick(position: Int, model: HappyPlaceModel)
-    		}
+17. How to make recycler view items clickable</br>
+	I. Create an interface inside adapter</br></br>
+		interface onClickInterface{</br>
+			//we need position to identify</br>
+       			 //model to populate the detail activity</br>
+        		fun onClick(position: Int, model: HappyPlaceModel)</br>
+    		}</br></br>
 	
-	II. Create global variable inside class in adapter:
-		private var onClickListener: onClickInterface?=null
+	II. Create global variable inside class in adapter:</br></br>
+		private var onClickListener: onClickInterface?=null</br></br>
 
 
-	III. Function binding the onClickListener in Adapter
-		fun setOnClickListener(onClickListener: onClickInterface){
-       			 this.onClickListener=onClickListener
-    		}
+	III. Function binding the onClickListener in Adapter</br></br>
+		fun setOnClickListener(onClickListener: onClickInterface){</br>
+       			 this.onClickListener=onClickListener</br>
+    		}</br></br>
 
-	IV. Inside the activity where the recycler view is existing:
-		First define the adapter. then:
+	IV. Inside the activity where the recycler view is existing:</br></br>
+		First define the adapter. then:</br>
 		
 		adapter.setOnClickListener(object: HappyPlacesAdapter.onClickInterface{
             		override fun onClick(position: Int, model: HappyPlaceModel) {
@@ -71,8 +71,8 @@ Focusable false prevents us from typing in the date: We want to select from cale
         	})
 
 
-	V. In Adapter: Assign the onClickListener to each element
-		In OnBindViewHolder:
+	V. In Adapter: Assign the onClickListener to each element</br></br>
+		In OnBindViewHolder:</br>
 
 		holder.itemView.setOnClickListener{
 			//whatever you want to do when clicked
@@ -82,7 +82,7 @@ Focusable false prevents us from typing in the date: We want to select from cale
 		}
 
 
-	Working: In bindViewHolder(V) every view is assigned a onClickListener. When we click it, it calls the onClick function (III). The adapter is 	informed to execute this function. But the adapter has overridden it (IV). So it calls the overridden version which opens the new activity
+	Working: In bindViewHolder(V) every view is assigned a onClickListener. When we click it, it calls the onClick function (III). The adapter is 	informed to execute this function. But the adapter has overridden it (IV). So it calls the overridden version which opens the new activity</br></br></br>
 
 
 
